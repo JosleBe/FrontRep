@@ -1,11 +1,9 @@
-import logo from './logo.svg';
-import './App.css';
-import LoginPage from './components/auth/LoginPage';
+import AppRouter from './router/AppRouter';
 
 function App() {
   return (
     <div className="App">
-      <LoginPage/>
+      <AppRouter />
     </div>
   );
 }
