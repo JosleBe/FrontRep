@@ -1,29 +1,37 @@
 import React, { useState } from "react";
-import axios from "axios";
 import miLogo from "../../assets/img/logo-pro-help.png";
 import campania from "../../assets/img/voluntarios.jpg";
+import { useNavigate } from "react-router-dom";
+import UserService from "../../service/UserService";
 
 const LoginPage = () => {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [error, setError] = useState('')
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
-    const [formData, setFormData] = useState({ email: "", password: "" });
-    const [error, setError] = useState("");
-
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
         try {
-            const response = await axios.post("http://localhost:8080/api/auth/login", formData);
-            console.log("Respuesta del servidor:", response.data);
-            alert("Inicio de sesión exitoso");
-        } catch (err) {
-            console.error("Error al iniciar sesión:", err);
-            setError("Credenciales incorrectas o error en el servidor.");
+            const userData = await UserService.login(email, password)
+            console.log(userData)
+            if (userData.token) {
+                localStorage.setItem('token', userData.token)
+                localStorage.setItem('role', userData.role)
+                navigate('/profile')
+            } else {
+                setError(userData.message)
+            }
+
+        } catch (error) {
+            console.log(error)
+            setError(error.message)
+            setTimeout(() => {
+                setError('');
+            }, 5000);
         }
-    };
+    }
 
     return (
         <div className="container-fluid vh-100 d-flex align-items-center justify-content-center"
@@ -56,12 +64,12 @@ const LoginPage = () => {
                         <form onSubmit={handleSubmit}>
                             <div className="mb-3">
                                 <label className="form-label">Correo o teléfono</label>
-                                <input type="text" name="email" className="form-control" required value={formData.email} onChange={handleChange} />
+                                <input type="text" name="email" className="form-control" required value={email}  onChange={(e) => setEmail(e.target.value)} />
                             </div>
                             <div className="mb-3">
                                 <label className="form-label">Contraseña</label>
                                 <div className="input-group">
-                                    <input type={showPassword ? "text" : "password"} name="password" className="form-control" required value={formData.password} onChange={handleChange} />
+                                    <input type={showPassword ? "text" : "password"} name="password" className="form-control" required value={password}  onChange={(e) => setPassword(e.target.value)} />
                                     <button type="button" className="btn btn-outline-secondary" onClick={() => setShowPassword(!showPassword)}>
                                         {showPassword ? "🙈" : "👁"}
                                     </button>

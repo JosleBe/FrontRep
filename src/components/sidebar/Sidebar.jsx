@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import logo from '../../assets/img/logo-pro-help.png';
 import '../sidebar/Sidebar.css';
+import { NavLink } from 'react-router-dom';
 
 const Sidebar = () => {
   const [active, setActive] = useState("Perfil");
@@ -14,26 +15,30 @@ const Sidebar = () => {
       <hr style={{background:'white',height:'4px'}}/>
       <ul className="nav nav-pills flex-column mb-auto">
         <li className="nav-item">
-          <a 
-            href="#" 
-            className={`nav-link ${active === "Perfil" ? "active" : "link-dark"}`}
-            style={{ backgroundColor: active === "Perfil" ? "#FFFFFF" : "transparent", color: active === "Perfil" ? "black" : "inherit" }}
-            onClick={() => setActive("Perfil")}
+        <NavLink
+            to="/profile"
+            className="nav-link"
+            style={({ isActive }) => ({
+              backgroundColor: isActive ? "#FFFFFF" : "transparent",
+              color: isActive ? "black" : "inherit",
+            })}
           >
             <i className="fas fa-home me-2"></i>
             Perfil
-          </a>
+          </NavLink>
         </li>
         <li>
-          <a 
-            href="#" 
-            className={`nav-link ${active === "Campañas" ? "active" : "link-dark"}`}
-            style={{ backgroundColor: active === "Campañas" ? "#FFFFFF" : "transparent", color: active === "Campañas" ? "black" : "inherit" }}
-            onClick={() => setActive("Campañas")}
+        <NavLink
+            to="/campaigns"
+            className="nav-link"
+            style={({ isActive }) => ({
+              backgroundColor: isActive ? "#FFFFFF" : "transparent",
+              color: isActive ? "black" : "inherit",
+            })}
           >
             <i className="fas fa-tachometer-alt me-2"></i>
             Campañas
-          </a>
+          </NavLink>
         </li>
         <li>
           <a 
