@@ -23,8 +23,8 @@ const Sidebar = () => {
               color: isActive ? "black" : "inherit",
             })}
           >
-            <i className="fas fa-home me-2"></i>
-            Perfil
+            <i style={{fontSize:18}}className="fas fa-home me-2"></i>
+            <span style={{fontSize:17, fontWeight:500}}>Perfil</span> 
           </NavLink>
         </li>
         <li>
@@ -36,32 +36,24 @@ const Sidebar = () => {
               color: isActive ? "black" : "inherit",
             })}
           >
-            <i className="fas fa-tachometer-alt me-2"></i>
-            Campañas
+            <i style={{fontSize:18}} className="fas fa-tachometer-alt me-2"></i>
+           <span style={{fontSize:17, fontWeight:500}}>Campañas</span> 
           </NavLink>
         </li>
-        <li>
-          <a 
-            href="#" 
-            className={`nav-link ${active === "Salir" ? "active" : "link-dark"}`}
-            style={{ backgroundColor: active === "Salir" ? "#FFFFFF" : "transparent", color: active === "Salir" ? "black" : "inherit" }}
-            onClick={() => setActive("Salir")}
+        <NavLink
+            to="/#"
+            className="nav-link"
+            style={({ isActive }) => ({
+              backgroundColor: isActive ? "#FFFFFF" : "transparent",
+              color: isActive ? "black" : "inherit",
+            })}
           >
-            <i className="fas fa-box me-2"></i>
-            Salir
-          </a>
-        </li>
+            <i className="fas fa-tachometer-alt me-2"></i>
+            <span style={{fontSize:17, fontWeight:500}}>Usuarios</span> 
+          </NavLink>
       </ul>
       
-      <div className="dropdown">
-        <ul className="dropdown-menu text-small shadow" aria-labelledby="dropdownUser1">
-          <li><a className="dropdown-item" href="#">Profile</a></li>
-          <li><a className="dropdown-item" href="#">Settings</a></li>
-          <li><a className="dropdown-item" href="#">Sign out</a></li>
-          
-        </ul>
-        
-      </div>
+      
     </div>
   );
 }

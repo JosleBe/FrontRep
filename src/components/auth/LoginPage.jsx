@@ -13,6 +13,7 @@ const LoginPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        /*
         try {
             const userData = await UserService.login(email, password)
             console.log(userData)
@@ -31,6 +32,8 @@ const LoginPage = () => {
                 setError('');
             }, 5000);
         }
+        */
+           navigate('/profile')   
     }
 
     return (

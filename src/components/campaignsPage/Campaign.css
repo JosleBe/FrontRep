@@ -1,0 +1,6 @@
+.container-card {
+ display: flex;
+ flex-direction: row;
+ gap: 10px;
+ margin-top: 20px;
+}
