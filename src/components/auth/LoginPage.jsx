@@ -3,7 +3,6 @@ import miLogo from "../../assets/img/logo-pro-help.png";
 import campania from "../../assets/img/voluntarios.jpg";
 import { useNavigate } from "react-router-dom";
 import UserService from "../../service/UserService";
-
 const LoginPage = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -13,7 +12,7 @@ const LoginPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        /*
+        
         try {
             const userData = await UserService.login(email, password)
             console.log(userData)
@@ -32,8 +31,8 @@ const LoginPage = () => {
                 setError('');
             }, 5000);
         }
-        */
-           navigate('/profile')   
+        
+          
     }
 
     return (

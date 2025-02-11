@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import UserService from '../../service/UserService.js';
 import AspectRatio from '@mui/joy/AspectRatio';
 import Box from '@mui/joy/Box';
-import Button from '@mui/joy/Button';
-import Divider from '@mui/joy/Divider';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
 import Input from '@mui/joy/Input';
@@ -214,27 +212,29 @@ function ProfilePage() {
                         </Stack>
                         <Stack spacing={2} sx={{ flexGrow: 1 }}>
                             <Stack spacing={1}>
-                                <FormLabel>Name</FormLabel>
+                                <FormLabel>Nombre</FormLabel>
                                 <FormControl
                                     sx={{ display: { sm: 'flex-column', md: 'flex-row' }, gap: 2 }}
                                 >
-                                    <Input size="sm" placeholder="First name" />
-                                    <Input size="sm" placeholder="Last name" sx={{ flexGrow: 1 }} />
+                                    <Input size="sm" placeholder="First name" value={profileInfo.name} readOnly={true} />
+                                    <Input size="sm" placeholder="Last name" value={profileInfo.lastName} sx={{ flexGrow: 1 }} readOnly={true} />
                                 </FormControl>
                             </Stack>
                             <Stack direction="row" spacing={2}>
                                 <FormControl>
                                     <FormLabel>Role</FormLabel>
-                                    <Input size="sm" defaultValue="UI Developer" />
+                                    <Input size="sm" defaultValue="UI Developer" value={profileInfo.role} readOnly={true}/>
                                 </FormControl>
                                 <FormControl sx={{ flexGrow: 1 }}>
-                                    <FormLabel>Email</FormLabel>
+                                    <FormLabel>Correo electronico</FormLabel>
                                     <Input
                                         size="sm"
                                         type="email"
                                         startDecorator={<EmailRoundedIcon />}
                                         placeholder="email"
                                         defaultValue="siriwatk@test.com"
+                                        value={profileInfo.email}
+                                        readOnly={true}
                                         sx={{ flexGrow: 1 }}
                                     />
                                 </FormControl>
@@ -244,21 +244,21 @@ function ProfilePage() {
                     <Stack direction="row" spacing={2}>
                         <FormControl sx={{ flexGrow: 1 }}>
                             <FormLabel>Teléfono</FormLabel>
-                            <Input size="md" type="tel" placeholder="Número de teléfono" />
+                            <Input size="md" type="tel" placeholder="Número de teléfono" value={profileInfo.phone} readOnly={true} />
                         </FormControl>
                         <FormControl sx={{ flexGrow: 1 }}>
                             <FormLabel>Dirección</FormLabel>
-                            <Input size="md" placeholder="Dirección" />
+                            <Input size="md" placeholder="Dirección" value={profileInfo.direccion} readOnly={true} />
                         </FormControl>
                     </Stack>
                     <Stack direction="row" spacing={1}>
                         <FormControl sx={{ flexGrow: 1 }}>
                             <FormLabel>Fecha de nacimiento</FormLabel>
-                            <Input type="date" name="" id="" />
+                            <Input type="date" name="" id="" value={profileInfo.fechaNacimiento} readOnly={true}/>
                         </FormControl>
                         <FormControl sx={{ flexGrow: 1 }}>
                             <FormLabel>Sexo</FormLabel>
-                            <Select size="md" defaultValue="">
+                            <Select size="md" defaultValue={profileInfo.sexo} value={profileInfo.sexo} readOnly={true}>
                                 <Option value="">Opcional</Option>
                                 <Option value="male">Masculino</Option>
                                 <Option value="female">Femenino</Option>
