@@ -5,8 +5,6 @@ import '../sidebar/Sidebar.css';
 import { NavLink } from 'react-router-dom';
 
 const Sidebar = () => {
-  const [active, setActive] = useState("Perfil");
-
   return (
     <div className="d-flex flex-column flex-shrink-0 p-3" style={{ width: '280px', height: '100vh', background: '#AFCCD0' }}>
       <a href="/" className="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
@@ -41,7 +39,7 @@ const Sidebar = () => {
           </NavLink>
         </li>
         <NavLink
-            to="/#"
+            to="/chat"
             className="nav-link"
             style={({ isActive }) => ({
               backgroundColor: isActive ? "#FFFFFF" : "transparent",
@@ -49,7 +47,7 @@ const Sidebar = () => {
             })}
           >
             <i className="fas fa-tachometer-alt me-2"></i>
-            <span style={{fontSize:17, fontWeight:500}}>Usuarios</span> 
+            <span style={{fontSize:17, fontWeight:500}}>Chat</span> 
           </NavLink>
       </ul>
       

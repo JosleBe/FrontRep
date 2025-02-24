@@ -2,9 +2,11 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginPage from "../components/auth/LoginPage";
 import ProfilePage from "../components/userPages/ProfilePage"
 import Layout from "../layouts/Layout";
-import Campaigns from "../components/campaignsPage/Campaigns";
+import ErrorPage from "../components/errorPage/ErrorPage";
 import RegisterCampaign from "../components/campaignsPage/RegisterCampaign";
 import EditProfie from "../components/userPages/EditProfie";
+import ChatRoom from "../components/chatInbox/ChatRoom";
+import CampaignMain from "../components/campaignsPage/CampaignMain";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -22,6 +24,14 @@ const router = createBrowserRouter([
     path: "/campaigns",
     element: (
       <Layout>
+       <CampaignMain />
+      </Layout>
+      )
+  },
+  {
+    path: "/campaigns-register",
+    element: (
+      <Layout>
        <RegisterCampaign />
       </Layout>
       )
@@ -34,7 +44,21 @@ const router = createBrowserRouter([
       </Layout>
     ), // Con sidebar
   },
-
+  {
+    path: "/chat",
+    element: (
+      <Layout>
+        <ChatRoom />
+      </Layout>
+    ), // Con sidebar
+  },
+  {
+    path :"/pageError",
+    element: (
+      <ErrorPage/>
+    )
+  }
+ 
 ]);
 
 const AppRouter = () => {

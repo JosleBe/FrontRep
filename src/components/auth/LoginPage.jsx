@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import miLogo from "../../assets/img/logo-pro-help.png";
 import campania from "../../assets/img/voluntarios.jpg";
 import { useNavigate } from "react-router-dom";
@@ -10,9 +10,15 @@ const LoginPage = () => {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
 
+    useEffect(() => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role")
+        localStorage.removeItem("profileInfo")
+    }, [])
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+ 
         try {
             const userData = await UserService.login(email, password)
             console.log(userData)

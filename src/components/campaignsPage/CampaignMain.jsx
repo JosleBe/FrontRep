@@ -1,21 +1,18 @@
 import React, { useState } from 'react'
-
-
+import { useLocation } from 'react-router-dom';
 import Box from '@mui/joy/Box';
-
 import Typography from '@mui/joy/Typography';
-
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Link from '@mui/joy/Link';
-import { NavLink, useLocation } from 'react-router-dom';
-const RegisterCampaign = () => {
-    const location = useLocation();
+import { NavLink } from 'react-router-dom';
+const CampaignMain = () => {
     const [alignment, setAlignment] = useState("Campañas");
     const handleChange = (event, newAlignment) => {
         setAlignment(newAlignment)
     }
 
+    const location = useLocation();
     return (
         <div>
             <Box sx={{ flex: 1, width: '100%' }}>
@@ -33,7 +30,7 @@ const RegisterCampaign = () => {
                             >
                                 <Box sx={{ px: { xs: 2, md: 6 } }}>
                                     <Typography level="h2" component="h1" sx={{ mt: 1, mb: 2, color: 'black' }}>
-                                        Registrar campañas
+                                        Campañas
                                     </Typography>
                                 </Box>
                             </Box>
@@ -105,5 +102,4 @@ const RegisterCampaign = () => {
     )
 }
 
-export default RegisterCampaign
-
+export default CampaignMain

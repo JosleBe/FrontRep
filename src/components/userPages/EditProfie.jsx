@@ -19,18 +19,35 @@ import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import { useLocation } from 'react-router-dom';
 import Button from '@mui/joy/Button';
-import './EditProfile.css';
+import { Modal } from "antd";
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 const EditProfie = () => {
-    const [profileInfo, setProfileInfo] = useState({});
     const location = useLocation();
     const [bgColor, setBgColor] = useState('white');
+    const [profileInfo, setProfileInfo] = useState({});
+    const [originalProfile, setOriginalProfile] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalConfirmOpen, setIsModalConfirmOpen] = useState(false);
+     const [alignment, setAlignment] = useState("Editar perfil");
+        const handleChange = (event, newAlignment) => {
+            setAlignment(newAlignment)
+        }
     useEffect(() => {
-        fetchProfileInfo();
+        // Intentamos obtener el perfil desde localStorage
+        const storedProfile = JSON.parse(localStorage.getItem('profileInfo'));
+        if (storedProfile) {
+            // Si el perfil está en el localStorage, lo usamos
+            setProfileInfo(storedProfile);
+        } else {
+    
+            fetchProfileInfo();
+        }
     }, []);
     const handleMouseEnter = () => {
-        // Cambiar el fondo cuando el mouse entra al botón
-        setBgColor('#896447'); // Por ejemplo, un color amarillo
+
+        setBgColor('#896447');
     };
 
     const handleMouseLeave = () => {
@@ -39,48 +56,149 @@ const EditProfie = () => {
     };
     const fetchProfileInfo = async () => {
         try {
-            const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+            const token = localStorage.getItem('token');
             const response = await UserService.getYourProfile(token);
             setProfileInfo(response.user);
+            setOriginalProfile(response.user);
             console.log(response.user);
         } catch (error) {
             console.error('Error fetching profile information:', error);
         }
     };
 
-    const handleUpdate = () => {
-        // Lógica para actualizar el perfil
-        console.log('Actualizando perfil...', profileInfo);
-    };
-
+    const showModal = () => {
+        setIsModalOpen(true);
+      };
+    
+      const handleOk = async () => {
+        try {
+          const token = localStorage.getItem('token');
+          // Llamada a la API para actualizar
+          await UserService.updateUser(profileInfo.id, profileInfo, token ); 
+    
+          // Después de guardar, recuperamos los datos más recientes del perfil desde la base de datos
+          const response = await UserService.getYourProfile(token);
+          setProfileInfo(response.user); // Actualizamos el estado con los datos más recientes
+    
+          // Actualizamos el perfil en localStorage
+          localStorage.setItem('profileInfo', JSON.stringify(response.user));
+    
+          setTimeout(() => {
+            setIsModalConfirmOpen(true)
+          }, 500 );
+          setIsModalConfirmOpen(false)
+       
+          setIsModalOpen(false); // Cerramos el modal después de actualizar
+        } catch (error) {
+          console.error('Error updating profile:', error);
+          alert('Hubo un error al actualizar el perfil');
+          setIsModalOpen(false); // Cerramos el modal si ocurre un error
+        }
+      };
+      const handleConfirmOk = () => {
+        setIsModalConfirmOpen(false); // Cerramos el modal de confirmación
+      };
+    
+      const handleConfirmCancel = () => {
+        setIsModalConfirmOpen(false); // Cerramos el modal de confirmación
+      };
+    
+      const handleCancel = () => {
+        setIsModalOpen(false); // Cerramos el modal sin hacer nada
+      };
+    
+    const handleUpdateChange = (e) => {
+        const { name, value } = e.target;
+        setProfileInfo({ ...profileInfo, [name]: value })
+    }
     const handleReset = () => {
-        // Resetea los campos a la información original
-        fetchProfileInfo();
+        if (originalProfile) {
+            setProfileInfo(originalProfile);
+        }
     };
 
     return (
         <div>
+           
             <Box sx={{ flex: 1, width: '100%' }}>
-                <Box sx={{ px: { xs: 2, md: 6 } }}>
-                    <Breadcrumbs
-                        size="sm"
-                        aria-label="breadcrumbs"
-                        separator={<ChevronRightRoundedIcon fontSize="sm" />}
-                        sx={{ pl: 0 }}
-                    >
-                        <NavLink to="/profile">
-                            <Link sx={{ fontSize: 16, fontWeight: 500, color: location.pathname === '/profile' ? 'black' : 'gray' }}> Mi perfil</Link>
-                        </NavLink>
-                        <NavLink to="/editProfile">
-                            <Link sx={{ fontSize: 16, fontWeight: 500, color: location.pathname === '/editProfile' ? 'black' : 'gray' }}> Editar perfil</Link>
-                        </NavLink>
-                    </Breadcrumbs>
-                </Box>
-                <Box sx={{ position: 'sticky', top: { sm: -100, md: -110 }, bgcolor: 'background.body', zIndex: 9995 }}>
                     <Box sx={{ px: { xs: 2, md: 6 } }}>
-                        <Typography level="h2" component="h1" sx={{ mt: 1, mb: 2, color: '#896447' }}>
-                            Editar perfil
-                        </Typography>
+                    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        {/* Título Campañas */}
+                        <Box sx={{ flexShrink: 0 }}>
+                            <Box
+                                sx={{
+                                    position: 'sticky',
+                                    top: { sm: -100, md: -110 },
+                                    bgcolor: 'background.body',
+                                    zIndex: 9995,
+                                }}
+                            >
+                                <Box sx={{ px: { xs: 2, md: 6 } }}>
+                                    <Typography level="h2" component="h1" sx={{ mt: 1, mb: 2, color: 'black' }}>
+                                        Editar perfil
+                                    </Typography>
+                                </Box>
+                            </Box>
+                        </Box>
+
+                        {/* Botones de navegación */}
+                        <Box sx={{ width: 'auto' }}>
+                            <ToggleButtonGroup
+                                  value={alignment}
+                                  exclusive
+                                  onChange={handleChange}
+                                  aria-label="Platform"
+                                  sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}
+                            >
+                                <ToggleButton
+                                    value="web"
+                                    sx={{
+                                        bgcolor: location.pathname === '/profile' ? '#896447' : 'transparent', // Fondo personalizado
+                                        color: location.pathname === '/profile' ? 'white' : '#896447', // Texto con color personalizado
+                                        borderRadius: '20px', // Bordes redondeados
+                                        padding: '10px 20px', // Espaciado interno
+                                        fontSize: 16,
+                                        fontWeight: 500,
+                                        textTransform: 'none',
+                                        '&:hover': {
+                                            bgcolor: location.pathname === '/profile' ? '#6f4f33' : 'rgba(0, 0, 0, 0.1)', // Fondo más oscuro al hover
+                                            color: 'white', // Cambiar el color del texto al hacer hover
+                                        },
+                                        transition: 'all 0.3s ease', // Transición suave
+                                    }}
+                                >
+                                    <NavLink to="/profile" style={{ textDecoration: 'none' }}>
+                                        <Typography sx={{ color: location.pathname === '/profile' ? 'white' : '#896447' }}>
+                                            Mi perfil
+                                        </Typography>
+                                    </NavLink>
+                                </ToggleButton>
+
+                                <ToggleButton 
+                                    value="android"
+                                    sx={{
+                                        bgcolor: location.pathname === '/editProfile' ? '#896447' : 'transparent', // Fondo personalizado
+                                        color: location.pathname === '/editProfile' ? 'white' : '#896447', // Texto con color personalizado
+                                        borderRadius: '20px', // Bordes redondeados
+                                        padding: '10px 20px', // Espaciado interno
+                                        fontSize: 16,
+                                        fontWeight: 500,
+                                        textTransform: 'none',
+                                        '&:hover': {
+                                            bgcolor: location.pathname === '/editProfile' ? '#6f4f33' : 'rgba(0, 0, 0, 0.1)', // Fondo más oscuro al hover
+                                            color: 'white', // Cambiar el color del texto al hacer hover
+                                        },
+                                        transition: 'all 0.3s ease', // Transición suave
+                                    }}
+                                >
+                                    <NavLink to="/editProfile" style={{ textDecoration: 'none' }}>
+                                        <Typography sx={{ color: location.pathname === '/editProfile' ? 'white' : '#896447' }}>
+                                            Editar perfil
+                                        </Typography>
+                                    </NavLink>
+                                </ToggleButton>
+                            </ToggleButtonGroup>
+                        </Box>
                     </Box>
                 </Box>
                 <Stack spacing={4} sx={{ display: 'flex', maxWidth: '100%', mx: 'auto', px: { xs: 2, md: 6 }, py: { xs: 2, md: 3 }, border: 'none' }}>
@@ -117,14 +235,14 @@ const EditProfie = () => {
                                 <Stack spacing={1}>
                                     <FormLabel>Editar nombre</FormLabel>
                                     <FormControl sx={{ display: { sm: 'flex-column', md: 'flex-row' }, gap: 2 }}>
-                                        <Input size="md" placeholder="First name" value={profileInfo.firstName} onChange={(e) => setProfileInfo({ ...profileInfo, firstName: e.target.value })} />
-                                        <Input size="md" placeholder="Last name" sx={{ flexGrow: 1 }} value={profileInfo.lastName} onChange={(e) => setProfileInfo({ ...profileInfo, lastName: e.target.value })} />
+                                        <Input size="md" placeholder="First name" value={profileInfo.name} name='name' onChange={handleUpdateChange} />
+                                        <Input size="md" placeholder="Last name" value={profileInfo.lastName} sx={{ flexGrow: 1 }} name='lastName' onChange={handleUpdateChange} />
                                     </FormControl>
                                 </Stack>
                                 <Stack direction="row" spacing={2}>
                                     <FormControl>
                                         <FormLabel>Role</FormLabel>
-                                        <Input size="md" defaultValue="UI Developer" />
+                                        <Input size="md" name='role' value={profileInfo.role} onChange={handleUpdateChange} />
                                     </FormControl>
                                     <FormControl sx={{ flexGrow: 1 }}>
                                         <FormLabel>Email</FormLabel>
@@ -133,8 +251,10 @@ const EditProfie = () => {
                                             type="email"
                                             startDecorator={<EmailRoundedIcon />}
                                             placeholder="email"
-                                            defaultValue="siriwatk@test.com"
+                                            name='email'
+                                            value={profileInfo.email}
                                             sx={{ flexGrow: 1 }}
+                                            onChange={handleUpdateChange}
                                         />
                                     </FormControl>
                                 </Stack>
@@ -143,22 +263,22 @@ const EditProfie = () => {
                         <Stack direction="row" spacing={2}>
                             <FormControl sx={{ flexGrow: 1 }}>
                                 <FormLabel>Teléfono</FormLabel>
-                                <Input size="md" type="tel" placeholder="Número de teléfono" />
+                                <Input size="md" type="tel" name='phone' placeholder="Número de teléfono" value={profileInfo.phone} onChange={handleUpdateChange} />
                             </FormControl>
                             <FormControl sx={{ flexGrow: 1 }}>
                                 <FormLabel>Dirección</FormLabel>
-                                <Input size="md" placeholder="Dirección" />
+                                <Input size="md" placeholder="Dirección" name='direccion' value={profileInfo.direccion} onChange={handleUpdateChange} />
                             </FormControl>
                         </Stack>
                         <Stack direction="row" spacing={1}>
                             <FormControl sx={{ flexGrow: 1 }}>
                                 <FormLabel>Fecha de nacimiento</FormLabel>
-                                <Input type="date" name="" id="" />
+                                <Input type="date" name="fechaNacimiento" id="" value={profileInfo.fechaNacimiento} onChange={handleUpdateChange} />
 
                             </FormControl>
                             <FormControl sx={{ flexGrow: 1 }}>
                                 <FormLabel>Sexo</FormLabel>
-                                <Select size="md" defaultValue="">
+                                <Select size="md" name='sexo' defaultValue={profileInfo.sexo} onChange={handleUpdateChange}>
                                     <Option value="">Opcional</Option>
                                     <Option value="male">Masculino</Option>
                                     <Option value="female">Femenino</Option>
@@ -177,17 +297,33 @@ const EditProfie = () => {
                                     cursor: 'pointer',
                                 }}
                                 onMouseEnter={handleMouseEnter}  // Al pasar el mouse
-                                onMouseLeave={handleMouseLeave}  // Al salir el mouse
+                                onMouseLeave={handleMouseLeave}
+                                onClick={showModal}  // Al salir el mouse
                             >
                                 Actualizar
                             </Button>
-                            <Button  style={{background:'black'}} onClick={handleReset}>Limpiar</Button>
+                            <Button style={{ background: 'black', cursor: 'pointer' }} onClick={handleReset}>Limpiar</Button>
                         </Stack>
                     </Card>
                 </Stack>
+                <Modal
+                    title="Confirmar cambios"
+                    open={isModalOpen}
+                    onOk={handleOk}
+                    onCancel={handleCancel}
+                >
+                    <p>¿Estás seguro de que deseas guardar los cambios en tu perfil?</p>
+                </Modal>
+                <Modal
+                    title="Actualización exitosa"
+                    open={isModalConfirmOpen}
+                    onOk={handleConfirmOk}
+                    onCancel={handleConfirmCancel}
+                >
+                </Modal>
             </Box>
         </div>
-    );
+    );  
 };
 
 export default EditProfie;
